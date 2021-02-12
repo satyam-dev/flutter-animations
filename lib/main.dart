@@ -30,10 +30,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   double _bottomOffset = 500;
+  double _borderRadiusEnd = 20;
 
   void _animate() {
     setState(() {
       _bottomOffset = _bottomOffset == 500 ? 0 : 500;
+      _borderRadiusEnd = _borderRadiusEnd == 20 ? 100 : 20;
     });
   }
 
@@ -43,26 +45,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          AnimatedPositioned(
-            bottom: _bottomOffset,
-            duration: Duration(milliseconds: 2000),
-            curve: Curves.bounceOut,
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                shape: BoxShape.circle,
-              ),
-            ),
-            onEnd: () => {
-               _animate()
-            },
-          )
-        ],
+      body:TweenAnimationBuilder(
+        tween: Tween<double>(begin: 20, end: _borderRadiusEnd),
+        duration: Duration(seconds: 1),
+        curve: Curves.easeInOutBack,
+        builder: (_, double value, __) {
+          return Container(
+            height: 200,
+            width: 200,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(value), color: Colors.red),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _animate,
