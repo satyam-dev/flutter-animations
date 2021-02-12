@@ -29,13 +29,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double height = 150;
-  double width = 150;
+  double _bottomOffset = 500;
 
   void _animate() {
     setState(() {
-      height = height == 150 ? 250 : 150;
-      width = width == 150 ? 250 : 150;
+      _bottomOffset = _bottomOffset == 500 ? 0 : 500;
     });
   }
 
@@ -45,13 +43,27 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: AnimatedContainer(
-        duration: Duration(milliseconds: 1000),
-        height: height,
-        width: width,
-        color: Colors.green,
-      )),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          AnimatedPositioned(
+            bottom: _bottomOffset,
+            duration: Duration(milliseconds: 2000),
+            curve: Curves.bounceOut,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.green,
+                shape: BoxShape.circle,
+              ),
+            ),
+            onEnd: () => {
+               _animate()
+            },
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _animate,
         tooltip: 'Play',
