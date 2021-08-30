@@ -33,3 +33,102 @@ Using `TweenAnimationBuilder` we can create our own custom custom implicit anima
 The `builder` takes 3 parameters - context, value and child. For optimisation purposes, we can pass child widgit to our `builder` so that every time it gets invoked, it does not reconstructs certain widgits which does not depend on the value parameter(in short which are not changing over time).
 
 This way Flutter will know the only widgit that it needs to rebuild from frame to frame. We can also set `static final Tween` wherever the Tween's `begin` and `end` values never changes.
+
+## Examples:
+### 1. Social Share Widget
+
+**Read the complete blog tutorial** [here](https://levelup.gitconnected.com/animate-a-social-share-button-using-implicit-animations-in-flutter-9b2b86dd6594)
+
+![1_1IPbJK6vVWkk3aQ-j-X_rg](https://user-images.githubusercontent.com/24974033/131338701-5ef9282d-b4a0-49a2-94b5-520e059acb10.gif)
+
+**Widget diagram:**
+
+![1_Nib3s1s1IikoBLu9FBnglg](https://user-images.githubusercontent.com/24974033/131339499-b9446c7b-f240-4270-83d9-5c90a3835529.png)
+
+**Code:**
+
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+
+class ShareButton extends StatefulWidget {
+  @override
+  _ShareButtonState createState() => _ShareButtonState();
+}
+
+class _ShareButtonState extends State<ShareButton> {
+  bool isOpen = false;
+
+  _toggleShare() {
+    setState(() {
+      isOpen = !isOpen;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return  Stack(
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.fastOutSlowIn,
+          width: isOpen ? 240 : 48,
+          height: 48,
+          decoration: ShapeDecoration(
+            color: Colors.grey[400],
+            shape: StadiumBorder(),
+          ),
+        ),
+        Container(
+          width: 40,
+          margin: const EdgeInsets.only(left: 4),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          child: AnimatedCrossFade(
+            duration: const Duration(milliseconds: 450),
+            firstChild: IconButton(
+              icon: Icon(Icons.share),
+              onPressed: () => _toggleShare(),
+            ),
+            secondChild: IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () => _toggleShare(),
+            ),
+            crossFadeState: !isOpen
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+          ),
+        ),
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 450),
+          opacity: isOpen ? 1 : 0,
+          child: Container(
+            width: 240,
+            padding: const EdgeInsets.only(left: 40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  icon: Icon(AntDesign.twitter),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon:Icon(AntDesign.facebook_square),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(AntDesign.instagram),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
